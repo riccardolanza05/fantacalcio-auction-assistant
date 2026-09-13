@@ -24,6 +24,17 @@ Quotazioni_Fantacalcio_*.xlsx
 Statistiche_Fantacalcio_*.xlsx
 voti_*.xlsx
 predizioni_2026_27_v2*
+predizioni.csv
+
+# pricing/votes/: credenziali e dati grezzi/derivati scaricati da fantacalcio.it
+pricing/votes/cookie.txt
+pricing/votes/voti_raw/
+pricing/votes/voti_panel.csv
+pricing/votes/voti_panel_report.txt
+pricing/votes/voti_aggregato*.csv
+pricing/votes/validazione_voti.txt
+pricing/model/*.json
+pricing/model/predizioni*.csv
 
 # OS
 .DS_Store

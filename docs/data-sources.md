@@ -19,10 +19,10 @@ Tutti da **fantacalcio.it**, sezione statistiche/quotazioni ufficiali
 
 | File | Dove | Usato da |
 |---|---|---|
-| `Quotazioni_Fantacalcio_Stagione_AAAA_AA.xlsx` | fantacalcio.it → Quotazioni | `pricing/` (indirettamente, via le predizioni), `server/build_storico_arricchito.py` |
+| `Quotazioni_Fantacalcio_Stagione_AAAA_AA.xlsx` | fantacalcio.it → Quotazioni | `pricing/model/train_model.py`, `server/build_storico_arricchito.py` |
 | `Statistiche_Fantacalcio_Stagione_AAAA_AA.xlsx` | fantacalcio.it → Statistiche | `server/build_giocatori.py`, `server/build_storico_arricchito.py` |
-| `voti_AAAA-AA_gNN.xlsx` (una per giornata) | fantacalcio.it → Voti | il modello ML di produzione attesa (script assente, vedi sotto) |
-| `probabili-formazioni-serie-a` (HTML) | https://www.fantacalcio.it/probabili-formazioni-serie-a — tasto destro → "Salva pagina", salvata **senza estensione** nella cartella `server/` | `server/build_giocatori.py` (infortuni e titolarita') |
+| `voti_AAAA-AA_gNN.xlsx` (una per giornata) | fantacalcio.it → Voti (o scaricali con `pricing/votes/scraper_voti.py`) | `pricing/votes/` → `voti_aggregato_v3.csv` → `pricing/model/` |
+| `probabili-formazioni-serie-a` (HTML) | https://www.fantacalcio.it/probabili-formazioni-serie-a — tasto destro → "Salva pagina", salvata **senza estensione** nella cartella `server/` | `server/build_giocatori.py` (infortuni e titolarita'), opzionalmente `pricing/model/train_model.py` (titolarita' futura, vedi sezione 3) |
 | `Rose_lega-<tuasigla>.xlsx` | export della TUA lega su fantacalcio.it/FantaAsta Live | `server/build_storico_arricchito.py`, e va copiato accanto ad `app.py` per la ricerca "asta dell'anno scorso" |
 
 Per un'asta live serve anche l'accesso alla piattaforma **FantaAsta Live**
@@ -60,32 +60,59 @@ problemi risolti qui:
   importanti. Vedi `server/player_db.py` e `server/common.py` per la
   strategia di matching (id numerico → nome abbreviato → cognome+iniziale).
 
-## 3. Cosa manca per una pipeline riproducibile end-to-end
+## 3. La pipeline e' ora riproducibile end-to-end
 
-Con SOLO il codice di questo repository e i file elencati sopra, la
-pipeline **non gira interamente da zero**. Mancano due pezzi:
+Le prime versioni di questo repository segnalavano il modello ML di
+produzione attesa e `Hreg.pkl` come pezzi mancanti. Non lo sono piu':
+entrambi gli script che li generano sono stati **recuperati dalla
+trascrizione della sessione originale** in cui il modello e' stato
+sviluppato (salvata integralmente in Basic Memory, l'archivio di note
+persistenti dell'autore) e sono ora in `pricing/model/`:
 
-1. **Lo script di training del modello ML.** Il codice che addestra
-   l'`HistGradientBoostingRegressor`, fa la cross-validation temporale,
-   calcola gli intervalli p10/p90 con regressione quantile conformalizzata e
-   produce SHAP non e' incluso in questo repository. Il suo output atteso
-   (un CSV/XLSX con colonne `Id, Nome, Squadra, Ruolo, QtI, FVM,
-   pct_titolarita, produzione_attesa, p10, p90, presenze_2025_26,
-   fm_media_2025_26, ...`, vedi `examples/sample_data/predizioni_esempio.csv`
-   per lo schema esatto) e' l'input di `pricing/modello_prezzo.py`.
-   **Se hai questo script, forniscilo**: e' il pezzo che chiude la pipeline.
-2. **`Hreg.pkl`** — lo shrinkage gerarchico bayesiano (`fm_storica`,
-   `fm_shrunk`, `fm_L1`, `correzione_fm`, `n_stagioni`) che alimenta lo
-   strato 3b (regressione alla media, sezione 4 di `docs/methodology.md`).
-   Senza questo file `pricing/modello_prezzo.py` funziona comunque — la
-   correzione 3b si disattiva silenziosamente e vale 0 — ma non e'
-   l'output completo del progetto originale.
+- `pricing/model/build_hreg.py` → produce `Hreg.pkl` (shrinkage gerarchico
+  per la regressione alla media, strato 3b);
+- `pricing/model/train_model.py` → addestra l'`HistGradientBoostingRegressor`
+  con validazione temporale e regressione quantile conformalizzata, e
+  produce le predizioni (`produzione_attesa`, `p10`, `p90`) che sono
+  l'input di `pricing/modello_prezzo.py`.
 
-Tutto il resto della pipeline (`pricing/modello_prezzo.py`,
-`pricing/verdetto.py`, `server/build_giocatori.py`,
-`server/build_storico_arricchito.py`) e' incluso e funzionante, e i loro
-percorsi di input/output sono parametrizzabili da riga di comando (vedi
-`--help` su ciascuno, o `examples/config.example.toml`).
+Prima di includerli sono stati **rieseguiti sui dati reali** per
+verificare che riproducessero i risultati del progetto originale, non solo
+che avessero un aspetto plausibile:
+
+| Numero verificato | Sessione originale | Rieseguito ora |
+|---|---|---|
+| Giocatori con storico in `Hreg.pkl` | 2274 | 2274 (identico) |
+| Correzione conformal (fantapunti) | 13.8 | 13.8 (identico) |
+| R² medio in validazione temporale | 0.467 (dossier) | ~0.45-0.47 |
+
+Dettagli, uso e limiti residui in `pricing/model/README.md`. La pipeline
+per costruire il loro input (`voti_aggregato_v3.csv`, dai voti
+giornata-per-giornata) e' in `pricing/votes/` — anch'essa recuperata: gli
+script (`scraper_voti.py`, `parse_voti.py`, `aggrega_voti_v3.py`,
+`regole_lega.py`, ecc.) non erano nella cartella originale del progetto ma
+sono stati ritrovati intatti in un'altra cartella della macchina
+dell'autore.
+
+**Quello che resta genuinamente assente:**
+
+1. **Una titolarita' futura fresca** per `train_model.py`
+   (`--probabili-json`): e' uno snapshot specifico della settimana in cui
+   viene generato, non un artefatto statico. Senza, quella singola feature
+   e' trattata come sconosciuta (pct=0) — il resto del modello funziona.
+   Vedi `pricing/model/README.md` per come ricostruirlo dalla pagina
+   probabili-formazioni-serie-a.
+2. **SHAP non e' mai stato effettivamente implementato**, nonostante la
+   documentazione precedente di questo progetto lo elencasse come fatto:
+   nella trascrizione della sessione originale compare solo come intenzione
+   dichiarata, mai come codice eseguito. Aggiungerlo e' immediato ma resta
+   da fare.
+
+Tutta la pipeline (`pricing/votes/`, `pricing/model/`,
+`pricing/modello_prezzo.py`, `pricing/verdetto.py`,
+`server/build_giocatori.py`, `server/build_storico_arricchito.py`) ha
+percorsi di input/output parametrizzabili da riga di comando (vedi
+`--help` su ciascuno script, o `examples/config.example.toml`).
 
 ## 4. Dati sintetici per provare il sistema subito
 

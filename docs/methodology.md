@@ -319,10 +319,11 @@ empirico.
 
 ## 8. Il modello di produzione attesa (a monte della pipeline)
 
-Lo script che produce `produzione_attesa`, `p10`, `p90` e
-`pct_titolarita` **non e' incluso in questo repository** (vedi
-`docs/data-sources.md`); questa sezione documenta le scelte fatte, per chi
-volesse ricostruirlo o fornirne uno.
+Implementazione: `pricing/model/train_model.py` (training + predizione) e
+`pricing/model/build_hreg.py` (shrinkage per lo strato 3b). Recuperati
+dalla trascrizione della sessione originale in cui sono stati sviluppati e
+rieseguiti sui dati reali per verificarne la fedelta' (dettagli in
+`docs/data-sources.md`, sezione 3).
 
 - Algoritmo: `HistGradientBoostingRegressor` (gradient boosting su
   istogrammi, scikit-learn). Scelta motivata: il gradient boosting batte le
@@ -333,7 +334,10 @@ volesse ricostruirlo o fornirne uno.
 - Intervalli: regressione quantile conformalizzata per p10/p90, con
   copertura empirica **81,6%** su dati mai visti (nominale 80%) — sono
   calibrati, non decorativi.
-- Interpretabilita': valori SHAP.
+- Interpretabilita': valori SHAP **previsti ma non implementati** — nella
+  trascrizione della sessione originale compare solo come intenzione
+  dichiarata, mai come codice effettivamente eseguito (vedi
+  `pricing/model/README.md`).
 - Titolarita': la percentuale dalle probabili formazioni viene mappata sui
   tassi di presenza storici, per convertire una stima qualitativa ("e' il
   titolare") in un moltiplicatore di minuti.

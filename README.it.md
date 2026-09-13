@@ -141,28 +141,42 @@ Per usarlo con la tua lega vera servono i tuoi file fantacalcio.it: vedi
 fatti, e [docs/operations.md](docs/operations.md) per la guida operativa
 completa (calibrazione, Tampermonkey, troubleshooting).
 
-## Stato onesto: cosa manca
+## Stato onesto
 
-Questo repository **non riproduce la pipeline end-to-end da zero**.
-Mancano due pezzi che il progetto originale usava ma che non sono su
-questo disco:
+La pipeline **e' riproducibile end-to-end** con i tuoi dati fantacalcio.it.
+`pricing/model/train_model.py` e `pricing/model/build_hreg.py` — lo script
+di training ML e il costruttore dello shrinkage gerarchico, che versioni
+precedenti di questo repository segnalavano come assenti — sono stati
+recuperati dalla trascrizione della sessione originale in cui sono stati
+sviluppati e rieseguiti sui dati reali per verificare che riproducessero i
+risultati documentati (vedi [docs/data-sources.md](docs/data-sources.md),
+sezione 3, per i numeri esatti). `pricing/votes/` (anch'esso recuperato)
+trasforma i voti grezzi giornata-per-giornata nel dataset aggregato che
+questi due script usano.
 
-1. **Lo script di training del modello ML** (HistGradientBoostingRegressor
-   + cross-validation temporale + intervalli conformalizzati + SHAP). Se
-   possiedi questo script, forniscilo: chiude la pipeline.
-2. **`Hreg.pkl`**, lo shrinkage gerarchico per la regressione alla media
-   (strato 3b). Senza, quello strato si disattiva da solo e vale 0 — il
-   resto del sistema funziona comunque.
+Restano aperte due cose piu' piccole:
 
-Dettaglio completo, incluso un disallineamento noto sul numero di squadre
-(10 vs 12) tra due parti della pipeline, in
-[docs/data-sources.md](docs/data-sources.md) e
-[PROJECT_DOSSIER.md](PROJECT_DOSSIER.md), sezione "Cosa manca".
+1. **Una titolarita' futura fresca** per `train_model.py` e' opzionale e
+   specifica della settimana in cui viene generata, non un artefatto
+   statico mancante — senza, quella singola feature resta "sconosciuta" e
+   il resto del modello non ne risente. Vedi `pricing/model/README.md`.
+2. **SHAP non e' mai stato effettivamente implementato** nel progetto
+   originale, nonostante la documentazione precedente di questo repository
+   lo indicasse come fatto: la trascrizione recuperata lo mostra solo come
+   intenzione dichiarata, mai come codice eseguito.
+
+Un disallineamento noto sul numero di squadre (10 vs 12) tra due parti
+della pipeline di pricing resta documentato in
+[docs/data-sources.md](docs/data-sources.md) e in
+[PROJECT_DOSSIER.md](PROJECT_DOSSIER.md).
 
 ## Struttura del repository
 
 ```
-pricing/    strati 1-3 del prezzo (modello_prezzo.py) e verdetto (verdetto.py)
+pricing/
+  modello_prezzo.py, verdetto.py   strati 1-3 del prezzo e verdetto
+  model/                            training ML (HistGradientBoosting + conformal) e Hreg.pkl
+  votes/                            scraping e aggregazione dei voti storici
 server/     server FastAPI dell'assistente live + script di costruzione dati
 browser/    userscript Tampermonkey e script da console per leggere l'asta
 docs/       metodologia, fonti dei dati, glossario, guida operativa

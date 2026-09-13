@@ -27,12 +27,23 @@ Le due parti contengono le stesse informazioni; se una diverge dall'altra, fa fe
 > - la password (sezione 12.2) e' stata rimossa dal codice: va impostata
 >   con la variabile d'ambiente obbligatoria `ASTA_PASSWORD`;
 > - `predizioni_2026_27_v2` e `probabili-formazioni-serie-a`, elencati
->   sotto come assenti (sezione 11), sono stati ritrovati e sono quindi
->   disponibili per chi ricostruisce la pipeline con dati reali — restano
->   assenti solo lo script di training del modello ML e `Hreg.pkl`;
+>   sotto come assenti (sezione 11), sono stati ritrovati sul disco
+>   dell'autore;
+> - lo script di training del modello ML e `Hreg.pkl`, anch'essi elencati
+>   sotto come assenti, sono stati **recuperati dalla trascrizione della
+>   sessione originale** (salvata in Basic Memory) e rieseguiti sui dati
+>   reali per validarli: sono ora `pricing/model/train_model.py` e
+>   `pricing/model/build_hreg.py`. La stessa trascrizione ha rivelato che
+>   **SHAP non era mai stato implementato** (solo dichiarato come
+>   intenzione), contrariamente a quanto affermato in questo documento;
+> - la pipeline per costruire `voti_aggregato_v3.csv` dai voti grezzi
+>   (scraper, parser, aggregatore, regole di punteggio) e' stata trovata
+>   intatta in un'altra cartella dell'autore e recuperata in
+>   `pricing/votes/`;
 > - la struttura di cartelle e' quella descritta in sezione 12.1, con
->   `Modello_prezzi/` rinominato in `pricing/` e gli script browser
->   spostati in `browser/`.
+>   `Modello_prezzi/` rinominato in `pricing/` (che ora include anche
+>   `pricing/model/` e `pricing/votes/`) e gli script browser spostati in
+>   `browser/`.
 > Il resto del documento (metodologia, storia dello sviluppo, inventario)
 > e' invariato ed e' la fonte di dettaglio piu' completa disponibile.
 
@@ -667,10 +678,16 @@ Percorso base: `C:\Users\ricca\Desktop\Fantacalcio\`
 Questa è la sezione più importante per chi costruisce la repo: **la pipeline oggi non è riproducibile
 end-to-end** con il solo materiale presente sul disco.
 
-1. **Script di training del modello ML — ASSENTE.** Il codice che addestra l'HistGradientBoostingRegressor,
-   fa la cross-validation temporale, calcola SHAP e produce gli intervalli conformalizzati non è tra i file.
-   Le sue uscite (`produzione_attesa`, `p10`, `p90`, `pct_titolarita`) entrano nella pipeline già pronte.
-   **Va riscritto o recuperato.**
+1. **Script di training del modello ML — RECUPERATO.** Non era tra i file
+   del progetto su disco, ma il codice completo (HistGradientBoostingRegressor,
+   cross-validation temporale, regressione quantile conformalizzata) è stato
+   ritrovato nella trascrizione della sessione originale (salvata in Basic
+   Memory) ed è ora in `pricing/model/train_model.py` e
+   `pricing/model/build_hreg.py`, rieseguiti sui dati reali e validati contro
+   i numeri della sessione originale (vedi `docs/data-sources.md`). SHAP non
+   risulta invece mai eseguito nella trascrizione, solo dichiarato come
+   intenzione: non era implementato, contrariamente a quanto affermato più
+   sotto in questo stesso documento.
 2. **`predizioni_2026_27_v2.csv` / `.xlsx` — RITROVATO.** Non era nella
    cartella del progetto ma nella cartella Downloads della partizione
    Windows (`predizioni_2026_27_v2_1.csv`, 517 righe, la generazione piu'
@@ -1421,10 +1438,16 @@ Summary of the publication decisions:
 The most important section for whoever builds the repo: **the pipeline is currently not reproducible
 end-to-end** from the material on disk alone.
 
-1. **ML training script — MISSING.** The code that trains the HistGradientBoostingRegressor, runs temporal
-   cross-validation, computes SHAP and produces conformalized intervals is not among the files. Its outputs
-   (`produzione_attesa`, `p10`, `p90`, `pct_titolarita`) enter the pipeline pre-computed. **It must be
-   rewritten or recovered.**
+1. **ML training script — RECOVERED.** It wasn't among the project's files
+   on disk, but the complete code (HistGradientBoostingRegressor, temporal
+   cross-validation, conformalized quantile regression) was found in the
+   transcript of the original session (saved in Basic Memory) and now lives
+   in `pricing/model/train_model.py` and `pricing/model/build_hreg.py`,
+   re-run against real data and validated against the original session's
+   numbers (see `docs/data-sources.md`). SHAP, on the other hand, never
+   appears as executed code in the transcript, only as a stated intention:
+   it was not implemented, contrary to what this same document claims
+   further below.
 2. **`predizioni_2026_27_v2.csv` / `.xlsx` — FOUND.** It wasn't in the
    project folder but in the Downloads folder on the Windows partition
    (`predizioni_2026_27_v2_1.csv`, 517 rows, the most recent generation).

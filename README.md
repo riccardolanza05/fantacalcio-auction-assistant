@@ -146,28 +146,40 @@ how they're shaped, and [docs/operations.md](docs/operations.md) (Italian)
 for the full operational guide (DOM calibration, Tampermonkey setup,
 troubleshooting).
 
-## Honest status: what's missing
+## Honest status
 
-This repository **does not reproduce the full pipeline end-to-end from
-scratch**. Two pieces the original project used are not on this disk:
+The pipeline **is** reproducible end-to-end from your own fantacalcio.it
+data. `pricing/model/train_model.py` and `pricing/model/build_hreg.py` —
+the ML training script and the hierarchical-shrinkage builder that earlier
+versions of this repository listed as missing — have been recovered from
+the transcript of the original development session and re-run against
+real data to confirm they reproduce the documented results (see
+[docs/data-sources.md](docs/data-sources.md), section 3, for the exact
+numbers). `pricing/votes/` (also recovered) turns the raw per-matchday vote
+files into the aggregated dataset those two scripts need.
 
-1. **The ML training script** (HistGradientBoostingRegressor + temporal
-   cross-validation + conformalized intervals + SHAP). If you have this
-   script, please provide it — it's the missing link that closes the
-   pipeline.
-2. **`Hreg.pkl`**, the hierarchical shrinkage used by the mean-reversion
-   correction (layer 3b). Without it, that layer silently disables itself
-   and contributes 0 — the rest of the system still works.
+Two smaller things remain open:
 
-Full detail, including a known mismatch between two parts of the pipeline
-over the league's team count (10 vs. 12), is in
+1. **A fresh starter-likelihood snapshot** for `train_model.py` is
+   optional and week-specific, not a static missing artifact — without it
+   that one feature defaults to "unknown" and the rest of the model is
+   unaffected. See `pricing/model/README.md`.
+2. **SHAP was never actually implemented** in the original project,
+   despite earlier documentation here claiming it was — the recovered
+   transcript shows it only as a stated intention, never as executed code.
+
+A known mismatch between two parts of the pricing pipeline over the
+league's team count (10 vs. 12) is also documented in
 [docs/data-sources.md](docs/data-sources.md) and in
-[PROJECT_DOSSIER.md](PROJECT_DOSSIER.md), "What's missing" section.
+[PROJECT_DOSSIER.md](PROJECT_DOSSIER.md).
 
 ## Repository layout
 
 ```
-pricing/    price layers 1-3 (modello_prezzo.py) and the verdict (verdetto.py)
+pricing/
+  modello_prezzo.py, verdetto.py   price layers 1-3 and the verdict
+  model/                            ML training (HistGradientBoosting + conformal) and Hreg.pkl
+  votes/                            scraping and aggregating historical votes
 server/     the live assistant's FastAPI server + data-building scripts
 browser/    the Tampermonkey userscript and console script that read the auction page
 docs/       methodology, data sources, glossary, operational guide (mostly Italian)
