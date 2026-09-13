@@ -34,36 +34,26 @@ sono tre:
 
 Il progetto risponde con due meta' complementari:
 
-```
-                    ┌──────────────────────────────────────────────┐
-   DATI STORICI     │  PIPELINE OFFLINE (prima dell'asta)          │
-   (fantacalcio.it) │                                              │
-                     │  modello ML: produzione attesa (+ p10/p90)   │
-                    │        ↓                                     │
-                    │  pricing/modello_prezzo.py  (strati 1-2-3)   │
-                    │        ↓  prezzi.csv                         │
-                    │  pricing/verdetto.py  (sopra/sottovalutato)  │
-                    │        ↓  verdetto.csv                       │
-                    │  server/build_giocatori.py  (merge + infortuni) │
-                    │        ↓                                     │
-                    │     giocatori_AAAA_AA.xlsx  ◄── il database │
-                    └──────────────────────────────────────────────┘
-                                        │
-                    ┌───────────────────┴──────────────────────────┐
-                    │  ASSISTENTE LIVE (durante l'asta)            │
-                    │                                              │
-  pagina d'asta ──► browser/asta-live.user.js (Tampermonkey, PC)   │
-  (HTTPS, Angular)  │  POST /ingest                                │
-                    │        ↓                                     │
-                    │  server/app.py (FastAPI, localhost:8000)     │
-                    │   ├── player_db.py    lookup giocatore       │
-                    │   ├── vorp_live.py    STRATO 4 (scarsita')   │
-                    │   ├── live_state.py   stato asta e rose      │
-                    │   ├── storico_prezzi.py  prezzi asta scorsa  │
-                    │   └── simili.py       profili per analogia   │
-                    │        ↓ WebSocket                           │
-                    │  static/phone.html  ◄── telefono, stessa WiFi│
-                    └──────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph OFF["PIPELINE OFFLINE — prima dell'asta"]
+        direction TB
+        HIST["Dati storici<br/>(fantacalcio.it)"] --> ML["Modello ML:<br/>produzione attesa (+ p10 / p90)"]
+        ML --> MP["pricing/modello_prezzo.py<br/>(strati 1-2-3)"]
+        MP -- prezzi.csv --> VD["pricing/verdetto.py<br/>(sopra / sottovalutato)"]
+        VD -- verdetto.csv --> BG["server/build_giocatori.py<br/>(merge + infortuni)"]
+        BG --> DB[("giocatori_AAAA_AA.xlsx<br/>— il database")]
+    end
+
+    subgraph ON["ASSISTENTE LIVE — durante l'asta"]
+        direction TB
+        AP["Pagina d'asta<br/>(HTTPS, Angular)"] -- POST /ingest --> US["browser/asta-live.user.js<br/>(Tampermonkey, sul PC)"]
+        US --> APP["server/app.py<br/>(FastAPI, localhost:8000)"]
+        APP --- MOD["player_db.py — lookup giocatore<br/>vorp_live.py — strato 4: scarsita'<br/>live_state.py — stato asta e rose<br/>storico_prezzi.py — prezzi asta scorsa<br/>simili.py — profili per analogia"]
+        APP -- WebSocket --> PH["static/phone.html<br/>telefono, stessa WiFi"]
+    end
+
+    DB -.-> APP
 ```
 
 Il vincolo di progetto, ripetuto in ogni strato: **nessuno strato puo'

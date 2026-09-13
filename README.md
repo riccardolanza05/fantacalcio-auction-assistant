@@ -38,36 +38,26 @@ questions keep coming up:
 
 The project answers with two complementary halves:
 
-```
-                    ┌──────────────────────────────────────────────┐
-   HISTORICAL DATA  │  OFFLINE PIPELINE (before the auction)       │
-   (fantacalcio.it) │                                              │
-                     │  ML model: expected production (+ p10/p90)   │
-                    │        ↓                                     │
-                    │  pricing/modello_prezzo.py  (layers 1-2-3)   │
-                    │        ↓  prices.csv                         │
-                    │  pricing/verdetto.py  (over/undervalued)     │
-                    │        ↓  verdict.csv                        │
-                    │  server/build_giocatori.py  (merge + injuries) │
-                    │        ↓                                     │
-                    │     giocatori_YYYY_YY.xlsx  ◄── the database │
-                    └──────────────────────────────────────────────┘
-                                        │
-                    ┌───────────────────┴──────────────────────────┐
-                    │  LIVE ASSISTANT (during the auction)         │
-                    │                                              │
-  auction page   ──► browser/asta-live.user.js (Tampermonkey, PC)  │
-  (HTTPS, Angular)  │  POST /ingest                                │
-                    │        ↓                                     │
-                    │  server/app.py (FastAPI, localhost:8000)     │
-                    │   ├── player_db.py    player lookup          │
-                    │   ├── vorp_live.py    LAYER 4 (scarcity)     │
-                    │   ├── live_state.py   auction & roster state │
-                    │   ├── storico_prezzi.py  last season's prices│
-                    │   └── simili.py       lookalike references  │
-                    │        ↓ WebSocket                           │
-                    │  static/phone.html  ◄── phone, same WiFi     │
-                    └──────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph OFF["OFFLINE PIPELINE — before the auction"]
+        direction TB
+        HIST["Historical data<br/>(fantacalcio.it)"] --> ML["ML model:<br/>expected production (+ p10 / p90)"]
+        ML --> MP["pricing/modello_prezzo.py<br/>(layers 1-2-3)"]
+        MP -- prices.csv --> VD["pricing/verdetto.py<br/>(over / undervalued)"]
+        VD -- verdict.csv --> BG["server/build_giocatori.py<br/>(merge + injuries)"]
+        BG --> DB[("giocatori_YYYY_YY.xlsx<br/>— the database")]
+    end
+
+    subgraph ON["LIVE ASSISTANT — during the auction"]
+        direction TB
+        AP["Auction page<br/>(HTTPS, Angular)"] -- POST /ingest --> US["browser/asta-live.user.js<br/>(Tampermonkey, on the PC)"]
+        US --> APP["server/app.py<br/>(FastAPI, localhost:8000)"]
+        APP --- MOD["player_db.py — player lookup<br/>vorp_live.py — layer 4: scarcity<br/>live_state.py — auction &amp; roster state<br/>storico_prezzi.py — last season's prices<br/>simili.py — lookalike references"]
+        APP -- WebSocket --> PH["static/phone.html<br/>phone, same WiFi"]
+    end
+
+    DB -.-> APP
 ```
 
 The design rule, enforced at every layer: **no layer may overturn the
