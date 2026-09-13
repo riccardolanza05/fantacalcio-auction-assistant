@@ -1,7 +1,7 @@
 # Fantacalcio Auction Assistant — Dossier di progetto / Project dossier
 
 **Versione documento:** 1.0 — 13 settembre 2026
-**Percorso del progetto sulla macchina di Riccardo:** `C:\Users\ricca\Desktop\Fantacalcio\`
+**Percorso del progetto sulla macchina dell'autore:** `C:\Users\<utente>\Desktop\Fantacalcio\`
 **Stato:** funzionante e usato in asta reale; non ancora pubblicato.
 **Destinazione:** questo file è la mappa completa del progetto, pensata per essere letta da un agente
 che deve costruire una repository Git open source a partire dal materiale esistente.
@@ -622,7 +622,7 @@ riutilizzare altrove. **Prima della pubblicazione la password va rimossa dal cod
 
 ## 10. Inventario completo dei file
 
-Percorso base: `C:\Users\ricca\Desktop\Fantacalcio\`
+Percorso base: `C:\Users\<utente>\Desktop\Fantacalcio\`
 
 ### `Modello_prezzi/` — pipeline di pricing offline
 | File | Pubblicare? | Note |
@@ -695,8 +695,12 @@ end-to-end** con il solo materiale presente sul disco.
    (giornate perse stimate, presenze e fantamedia 2025-26); non è incluso
    in questa repo pubblica (dato derivato da fantacalcio.it) ma esiste sul
    disco dell'autore.
-3. **`Hreg.pkl` — ASSENTE.** Contiene lo shrinkage gerarchico (`fm_storica`, `fm_shrunk`, `fm_L1`,
-   `correzione_fm`, `n_stagioni`) che alimenta lo strato 3b. Senza, la regressione alla media si disattiva.
+3. **`Hreg.pkl` — RECUPERATO.** Contiene lo shrinkage gerarchico (`fm_storica`, `fm_shrunk`, `fm_L1`,
+   `correzione_fm`, `n_stagioni`) che alimenta lo strato 3b. Lo script che lo costruisce è stato
+   ritrovato nella trascrizione della sessione originale ed è ora `pricing/model/build_hreg.py`,
+   rieseguito sui dati reali e validato (stessi identici numeri della sessione originale — vedi
+   `docs/data-sources.md`). Se non lo generi, `modello_prezzo.py` funziona comunque: la
+   regressione alla media si disattiva da sola.
    **Bug correlato trovato e corretto in questa repo**: quando il file manca,
    `modello_prezzo.py` andava comunque in errore perché il selettore finale
    delle colonne d'uscita referenziava sempre `n_stagioni`/`fm_L1`/
@@ -1419,7 +1423,7 @@ publication** (section 12).
 
 ## 10. Full file inventory
 
-Base path: `C:\Users\ricca\Desktop\Fantacalcio\` — see the tables in Part I, section 10, which apply verbatim.
+Base path: `C:\Users\<utente>\Desktop\Fantacalcio\` — see the tables in Part I, section 10, which apply verbatim.
 Summary of the publication decisions:
 
 - **Publish as-is:** all server and pricing Python modules, the tests, `static/*.html`, `inspector2.js`,
@@ -1455,8 +1459,12 @@ end-to-end** from the material on disk alone.
    matchdays missed, 2025-26 appearances and fantasy average); not shipped
    in this public repo (a fantacalcio.it-derived dataset) but exists on the
    author's disk.
-3. **`Hreg.pkl` — MISSING.** Holds the hierarchical shrinkage (`fm_storica`, `fm_shrunk`, `fm_L1`,
-   `correzione_fm`, `n_stagioni`) feeding layer 3b. Without it, mean reversion silently switches off.
+3. **`Hreg.pkl` — RECOVERED.** Holds the hierarchical shrinkage (`fm_storica`, `fm_shrunk`, `fm_L1`,
+   `correzione_fm`, `n_stagioni`) feeding layer 3b. The script that builds it was found in the
+   transcript of the original session and now lives at `pricing/model/build_hreg.py`, re-run
+   against real data and validated (identical numbers to the original session — see
+   `docs/data-sources.md`). If you don't generate it, `modello_prezzo.py` still works: mean
+   reversion just switches itself off.
    **Related bug found and fixed in this repo**: when the file is absent,
    `modello_prezzo.py` used to crash anyway, because the final output
    column selector always referenced `n_stagioni`/`fm_L1`/`fm_storica`/
@@ -1569,11 +1577,11 @@ See the table in Part I, section 14 — it is already bilingual and applies to b
 ---
 
 *Documento generato il 13 settembre 2026 ispezionando direttamente i file del progetto su
-`C:\Users\ricca\Desktop\Fantacalcio\`. Tutte le cifre riportate come "verificate" sono state ricalcolate dai
+`C:\Users\<utente>\Desktop\Fantacalcio\`. Tutte le cifre riportate come "verificate" sono state ricalcolate dai
 file stessi; le informazioni sul modello ML (R², copertura, SHAP) provengono dalla documentazione di progetto
 perché il codice di training non è presente sul disco.*
 
 *Document generated on 13 September 2026 by directly inspecting the project files at
-`C:\Users\ricca\Desktop\Fantacalcio\`. Every figure marked "verified" was recomputed from those files;
+`C:\Users\<utente>\Desktop\Fantacalcio\`. Every figure marked "verified" was recomputed from those files;
 information about the ML model (R², coverage, SHAP) comes from project documentation because the training code
 is not present on disk.*

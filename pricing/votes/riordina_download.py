@@ -7,7 +7,7 @@ Da:   voti_2015-16_g01.xlsx        (tutti insieme, in Download)
 A:    voti_raw/2015-16/g01.xlsx
 
 USO:
-    python riordina_download.py "C:/Users/ricca/Downloads"
+    python riordina_download.py "C:/Users/<utente>/Downloads"
 
 Se non passi il percorso, cerca nella cartella Download di default.
 """

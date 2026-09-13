@@ -10,11 +10,19 @@ squadre = 10                     # NSQ in server/build_giocatori.py e server/vor
 budget_per_squadra = 1000
 mia_squadra = "NapoLanza"        # -> variabile d'ambiente MIA_SQUADRA
 
+[pricing.votes]
+# python pricing/votes/scraper_voti.py  (poi parse_voti.py, valida_voti.py, aggrega_voti_v3.py)
+voti_aggregato_csv = "voti_aggregato_v3.csv"    # dato personale scaricato col TUO account, non nel repo
+
+[pricing.model]
+# python pricing/model/build_hreg.py --voti-aggregato <voti_aggregato_v3.csv> --out <Hreg.pkl>
+# python pricing/model/train_model.py --voti-aggregato ... --quotazioni-corrente ... --quotazioni-storiche-glob ... --out <predizioni>
+predizioni_csv = "predizioni_2026_27_v2.csv"   # generato da pricing/model/train_model.py
+hreg_pkl = "Hreg.pkl"                           # generato da pricing/model/build_hreg.py, opzionale (strato 3b)
+
 [pricing]
 # python pricing/modello_prezzo.py --in-csv <predizioni> --out-csv <prezzi> [--hreg <Hreg.pkl>]
-predizioni_csv = "predizioni_2026_27_v2.csv"   # uscita del modello ML (non nel repo, vedi docs/data-sources.md)
 prezzi_csv = "prezzi_2026_27.csv"
-hreg_pkl = "Hreg.pkl"                           # opzionale: shrinkage gerarchico per lo strato 3b
 
 # python pricing/verdetto.py --in-csv <prezzi> --out-csv <verdetto>
 verdetto_csv = "verdetto_2026_27.csv"

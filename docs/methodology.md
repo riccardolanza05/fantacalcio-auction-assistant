@@ -122,9 +122,9 @@ div_regressione = clip(correzione_fm / sd_ruolo, −2, +2) * 0.25 * PESO_REGRESS
                                                             (PESO_REGRESSIONE = 0.5)
 ```
 
-La `correzione_fm` viene da uno shrinkage gerarchico (`Hreg.pkl`,
-assente in questo repo, vedi `docs/data-sources.md`); se manca, lo strato
-3b si disattiva silenziosamente e vale 0.
+La `correzione_fm` viene da uno shrinkage gerarchico (`Hreg.pkl`, generato
+da `pricing/model/build_hreg.py`, vedi `docs/data-sources.md`); se il file
+manca, lo strato 3b si disattiva silenziosamente e vale 0.
 
 **Doppio tetto.** La correzione totale e' limitata da un tetto assoluto per
 ruolo e da un tetto relativo:
