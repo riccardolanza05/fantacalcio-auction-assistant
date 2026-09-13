@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Asta Live - Copilota</title>
+<style>
+  :root {
+    --bg: #14101f; --card: #201a33; --accent: #7c5cff; --accent2: #23c48a;
+    --warn: #ff5c5c; --text: #f1eefc; --muted: #9c93b8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, Roboto, "Segoe UI", sans-serif;
+    padding: 10px 12px 40px;
+  }
+  #status { font-size: 12px; color: var(--muted); text-align: center; padding: 4px 0 10px; }
+  #status.ok::before { content: "● "; color: var(--accent2); }
+  #status.down::before { content: "● "; color: var(--warn); }
+
+  .card {
+    background: var(--card); border-radius: 14px; padding: 14px 16px;
+    margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  }
+  .player-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .player-name { font-size: 22px; font-weight: 700; }
+  .player-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px;
+    border-radius: 20px; background: var(--accent); color: white; margin-left: 6px;
+  }
+  .price-row { display: flex; gap: 10px; margin-top: 12px; }
+  .price-box { flex: 1; background: rgba(255,255,255,.05); border-radius: 10px; padding: 8px 10px; text-align: center; }
+  .price-box .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .price-box .val { font-size: 20px; font-weight: 700; margin-top: 2px; }
+  .price-box.main { background: rgba(124,92,255,.18); }
+  .price-box.main .val { color: var(--accent); font-size: 26px; }
+  .interval { font-size: 12px; color: var(--muted); text-align: center; margin-top: 8px; }
+  .stats-row { display: flex; gap: 8px; margin-top: 12px; font-size: 12px; }
+  .stat { flex: 1; background: rgba(255,255,255,.04); border-radius: 8px; padding: 6px 8px; text-align: center; }
+  .stat .lbl { color: var(--muted); font-size: 10px; }
+  .stat .val { font-weight: 600; margin-top: 2px; }
+  .not-in-model { color: var(--muted); font-size: 13px; padding: 6px 0; text-align: center; }
+  .storico { margin-top: 10px; padding: 8px 10px; border-radius: 8px;
+    background: rgba(35,196,138,.12); border-left: 3px solid var(--accent2);
+    font-size: 12px; }
+  .storico .lbl { color: var(--muted); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .04em; }
+  .storico .val { font-size: 17px; font-weight: 700; color: var(--accent2); }
+  .storico .det { color: var(--muted); margin-top: 2px; }
+  .storico.assente { background: rgba(255,255,255,.04); border-left-color: var(--muted); }
+  .simili { margin-top: 8px; padding: 8px 10px; border-radius: 8px;
+    background: rgba(124,92,255,.12); border-left: 3px solid var(--accent);
+    font-size: 12px; }
+  .simili .lbl { color: var(--muted); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .04em; margin-bottom: 4px; }
+  .simili .riga { display: flex; justify-content: space-between; align-items: baseline;
+    padding: 3px 0; border-top: 1px solid rgba(255,255,255,.06); }
+  .simili .riga:first-of-type { border-top: none; }
+  .simili .chi { flex: 1; }
+  .simili .chi b { font-weight: 600; }
+  .simili .meta { color: var(--muted); font-size: 10px; display: block; }
+  .simili .cr { font-weight: 700; color: var(--accent); font-size: 15px;
+    white-space: nowrap; margin-left: 8px; }
+
+  .inj { display:inline-flex; align-items:center; gap:4px; font-size:11px;
+    font-weight:700; color:#ff6b6b; background:rgba(255,92,92,.15);
+    padding:2px 7px; border-radius:20px; margin-left:6px; vertical-align:middle; }
+  .inj-box { display:flex; gap:7px; align-items:flex-start; margin-top:10px;
+    padding:7px 10px; border-radius:8px; background:rgba(255,92,92,.14);
+    border-left:3px solid #ff5c5c; font-size:11.5px; line-height:1.45;
+    color:#ffd0d0; }
+  .inj-box .croce { color:#ff5c5c; font-weight:900; font-size:14px; line-height:1.2; }
+  .stats-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-top:12px; }
+  .stats-grid .stat { background:rgba(255,255,255,.04); border-radius:8px;
+    padding:6px 4px; text-align:center; }
+  .stats-grid .lbl { color:var(--muted); font-size:9px; text-transform:uppercase;
+    letter-spacing:.02em; }
+  .stats-grid .val { font-weight:600; margin-top:2px; font-size:14px; }
+
+  .cerca { background:var(--card); border-radius:14px; padding:12px 14px;
+    margin-bottom:12px; }
+  .cerca .titolo { font-size:13px; font-weight:700; display:flex;
+    justify-content:space-between; align-items:center; cursor:pointer; }
+  .cerca .titolo .chev { color:var(--muted); font-size:11px; }
+  .cerca .corpo { margin-top:10px; }
+  .cerca input, .cerca select { width:100%; padding:9px 10px; font-size:15px;
+    border-radius:8px; border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.06); color:var(--text); outline:none; }
+  .cerca input:focus, .cerca select:focus { border-color:var(--accent); }
+  .cerca .filtri { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px; }
+  .cerca .esiti { margin-top:10px; max-height:46vh; overflow-y:auto; }
+  .cerca .riga { display:flex; justify-content:space-between; align-items:baseline;
+    padding:6px 2px; border-top:1px solid rgba(255,255,255,.06); font-size:13px; }
+  .cerca .riga .chi b { font-weight:600; }
+  .cerca .riga .meta { display:block; font-size:10px; color:var(--muted); }
+  .cerca .riga .cr { font-weight:700; color:var(--accent2); font-size:15px;
+    white-space:nowrap; margin-left:8px; }
+  .cerca .vuoto { font-size:12px; color:var(--muted); padding:8px 0; text-align:center; }
+
+  .verdetto { display:flex; justify-content:space-between; align-items:center;
+    margin-top:10px; padding:7px 10px; border-radius:8px; font-size:12px;
+    font-weight:700; letter-spacing:.02em; }
+  .verdetto .pct { font-size:15px; }
+  .vd-sotto { background:rgba(35,196,138,.18); color:#3fe0a5; }
+  .vd-sopra { background:rgba(255,92,92,.18); color:#ff8f8f; }
+  .vd-linea { background:rgba(255,255,255,.06); color:var(--muted); }
+  .vd-det { font-size:10px; color:var(--muted); text-align:center; margin-top:3px; }
+
+  .mysquad { background:var(--card); border-radius:14px; padding:12px 14px;
+    margin-bottom:12px; border:1px solid rgba(124,92,255,.35); }
+  .mysquad .head { display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:10px; }
+  .mysquad .nome { font-size:15px; font-weight:700; }
+  .mysquad .res { font-size:12px; color:var(--muted); }
+  .mysquad .res b { color:var(--accent2); font-size:15px; }
+  .bar { display:flex; height:10px; border-radius:5px; overflow:hidden;
+    background:rgba(255,255,255,.06); margin-bottom:8px; }
+  .bar span { display:block; }
+  .rep { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; font-size:11px; }
+  .rep .r { text-align:center; }
+  .rep .r .k { font-size:9px; color:var(--muted); text-transform:uppercase; }
+  .rep .r .v { font-weight:700; font-size:14px; margin-top:1px; }
+  .rep .r .c { font-size:10px; color:var(--muted); }
+  .nontrack { font-size:10px; color:var(--muted); margin-top:6px; }
+
+  h2.section { font-size: 13px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--muted); margin: 18px 4px 8px; }
+
+  table#teams { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table#teams th { text-align: left; font-size: 10px; color: var(--muted); font-weight: 500;
+    padding: 4px 6px; text-transform: uppercase; }
+  table#teams td { padding: 7px 6px; border-top: 1px solid rgba(255,255,255,.06); }
+  table#teams tr.affordable td.max { color: var(--accent2); font-weight: 700; }
+  table#teams tr.not-affordable { opacity: .45; }
+  table#teams td.max { font-weight: 700; text-align: right; }
+  table#teams td.budget { text-align: right; color: var(--muted); }
+  table#teams td.n { text-align: right; color: var(--muted); }
+
+  .log-item { font-size: 12px; color: var(--muted); padding: 4px 0; border-top: 1px solid rgba(255,255,255,.05); }
+  .log-item b { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div id="status" class="down">connessione...</div>
+
+<div id="mysquad" class="mysquad" style="display:none"></div>
+
+<div class="cerca">
+  <div class="titolo" id="cercaToggle">
+    <span>Cerca nell'asta dell'anno scorso</span><span class="chev" id="cercaChev">▼</span>
+  </div>
+  <div class="corpo" id="cercaCorpo" style="display:none">
+    <input id="cercaNome" type="search" placeholder="Nome giocatore (anche parziale)"
+           autocomplete="off" enterkeyhint="search">
+    <div class="filtri">
+      <select id="cercaSquadra"><option value="">Tutte le squadre</option></select>
+      <select id="cercaRuolo">
+        <option value="">Tutti i ruoli</option>
+        <option value="P">Portieri</option>
+        <option value="D">Difensori</option>
+        <option value="C">Centrocampisti</option>
+        <option value="A">Attaccanti</option>
+      </select>
+    </div>
+    <div class="esiti" id="cercaEsiti"></div>
+  </div>
+</div>
+
+<div id="playerCard" class="card">
+  <div class="not-in-model">In attesa del primo giocatore in asta...</div>
+</div>
+
+<h2 class="section">Squadre (ordinate per massima offerta possibile)</h2>
+<table id="teams">
+  <thead><tr><th>Squadra</th><th style="text-align:right">Budget</th><th style="text-align:right">Max</th><th style="text-align:right">N</th></tr></thead>
+  <tbody></tbody>
+</table>
+
+<h2 class="section">Ultima assegnazione</h2>
+<div id="log"></div>
+
+<script>
+const fmtCredit = (v) => (v === null || v === undefined) ? "-" : Math.round(v);
+
+function renderPlayer(p) {
+  const el = document.getElementById("playerCard");
+  if (!p || !p.nome) {
+    el.innerHTML = '<div class="not-in-model">Nessun giocatore in asta in questo momento.</div>';
+    return;
+  }
+
+  if (!p.in_modello) {
+    el.innerHTML = `
+      <div class="player-header">
+        <div><div class="player-name">${p.nome}</div>
+        <div class="player-sub">${p.squadra || ""} · ${p.ruolo || ""}</div></div>
+        ${p.fvm_live != null ? `<div class="badge">FVM ${p.fvm_live}</div>` : ""}
+      </div>
+      <div class="not-in-model">Fuori dal pool del modello: nessuna stima di prezzo disponibile.</div>
+      ${renderStorico(p.storico_asta, p.profili_simili)}`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="player-header">
+      <div><div class="player-name">${p.nome}${renderInfortunio(p)}</div>
+      <div class="player-sub">${p.squadra || ""} · ${p.ruolo || ""}${p.fascia ? " · " + p.fascia : ""}</div></div>
+      <div class="badge">FVM ${p.fvm_live ?? p.fvm_mercato ?? "-"}</div>
+    </div>
+    <div class="price-row">
+      <div class="price-box"><div class="lbl">Prezzo modello</div><div class="val">${fmtCredit(p.prezzo_modello)}</div></div>
+      <div class="price-box main"><div class="lbl">Consigliato</div><div class="val">${fmtCredit(p.prezzo_consigliato)}</div></div>
+    </div>
+    <div class="interval">${renderDettaglioPrezzo(p)}</div>
+    ${renderNotaInfortunio(p)}
+    ${renderStatistiche(p)}
+    ${renderVerdetto(p)}
+    ${renderStorico(p.storico_asta, p.profili_simili)}`;
+}
+
+function fmtNum(v) { return (v === null || v === undefined) ? "-" : Number(v).toFixed(2); }
+
+function renderStatistiche(p) {
+  const comuni = `
+    <div class="stat"><div class="lbl">Titol.</div><div class="val">${p.pct_titolarita ?? "-"}%</div></div>
+    <div class="stat"><div class="lbl">Pres.</div><div class="val">${p.presenze_2025_26 ?? "-"}</div></div>
+    <div class="stat"><div class="lbl">FM</div><div class="val">${fmtNum(p.fm_media_2025_26)}</div></div>`;
+  // I portieri hanno statistiche loro: gol e assist non dicono nulla su di
+  // loro, mentre clean sheet e gol subiti sono il cuore del loro rendimento.
+  const specifiche = (p.ruolo === "P")
+    ? `<div class="stat"><div class="lbl">Clean sh.</div><div class="val">${p.clean_sheet_2025_26 ?? "-"}</div></div>
+       <div class="stat"><div class="lbl">Gol sub.</div><div class="val">${p.gol_subiti_2025_26 ?? "-"}</div></div>`
+    : `<div class="stat"><div class="lbl">Gol</div><div class="val">${p.gol_2025_26 ?? "-"}</div></div>
+       <div class="stat"><div class="lbl">Assist</div><div class="val">${p.assist_2025_26 ?? "-"}</div></div>`;
+  return `<div class="stats-grid">${comuni}${specifiche}</div>`;
+}
+
+function renderVerdetto(p) {
+  if (!p.verdetto) return "";
+  const v = String(p.verdetto).toLowerCase();
+  let cls = "vd-linea", testo = "in linea col mercato";
+  if (v.startsWith("sotto")) { cls = "vd-sotto"; testo = "SOTTOVALUTATO dal mercato"; }
+  else if (v.startsWith("sopra")) { cls = "vd-sopra"; testo = "SOPRAVVALUTATO dal mercato"; }
+  const sp = p.scarto_pct;
+  const segno = (sp != null && sp > 0) ? "+" : "";
+  // Sulle fasce alte il riferimento è quello del modello (il budget c'è
+  // davvero e il confronto è pulito); sulle code è quello di lega, che
+  // riflette i prezzi realmente pagati per riempire gli slot.
+  const rif = p.rif_verdetto === "lega" ? "rif. lega" : "rif. modello";
+  return `<div class="verdetto ${cls}">
+    <span>${testo}</span>
+    <span class="pct">${sp != null ? segno + sp + "%" : ""}</span>
+  </div>
+  ${p.prezzo_mercato != null ? `<div class="vd-det">prezzo ${fmtCredit(p.prezzo_modello)} vs ${fmtCredit(p.prezzo_mercato)} · ${rif}</div>` : ""}`;
+}
+
+function renderInfortunio(p) {
+  if (!p.infortunato) return "";
+  return `<span class="inj">✚</span>`;
+}
+
+function renderNotaInfortunio(p) {
+  if (!p.infortunato) return "";
+  // La dicitura è quella del sito ("out contro Venezia", "rientro da inizio
+  // ottobre"): riportata tale e quale, senza reinterpretarla.
+  const nota = p.nota_infortunio || "indisponibile";
+  return `<div class="inj-box"><span class="croce">✚</span><span>${nota}</span></div>`;
+}
+
+function renderDettaglioPrezzo(p) {
+  const parti = [];
+  if (p.correzione_vorp) parti.push(`VORP ${p.correzione_vorp > 0 ? "+" : ""}${p.correzione_vorp}`);
+  if (p.scarsita_reparto != null) parti.push(`scarsità ${Math.round(p.scarsita_reparto * 100)}%`);
+  if (p.deriva_mercato && Math.abs(p.deriva_mercato - 1) > 0.01) {
+    const pct = Math.round((p.deriva_mercato - 1) * 100);
+    parti.push(`mercato ${pct > 0 ? "+" : ""}${pct}%`);
+  }
+  if (p.disponibili_ruolo != null) parti.push(`${p.disponibili_ruolo} liberi`);
+  return parti.join(" · ") || "nessuna correzione attiva";
+}
+
+function renderMiaSquadra(m) {
+  const el = document.getElementById("mysquad");
+  // Se la mia rosa non è tra quelle lette non mostro nulla: una ripartizione
+  // riferita alla squadra sbagliata sarebbe peggio di nessuna ripartizione.
+  if (!m) { el.innerHTML = ""; el.style.display = "none"; return; }
+  el.style.display = "block";
+
+  // porta arancione, difesa verde, centrocampo azzurro, attacco rosso
+  const colori = { P: "#f2a03d", D: "#23c48a", C: "#4ea3f2", A: "#ff6b6b" };
+  const nomi = { P: "Porta", D: "Difesa", C: "Centro", A: "Attacco" };
+  const segmenti = ["P", "D", "C", "A"].map(r =>
+    `<span style="width:${m.per_ruolo[r].pct}%;background:${colori[r]}"></span>`).join("");
+  const celle = ["P", "D", "C", "A"].map(r => `
+    <div class="r"><div class="k" style="color:${colori[r]}">${nomi[r]}</div>
+      <div class="v">${m.per_ruolo[r].pct}%</div>
+      <div class="c">${m.per_ruolo[r].crediti} cr</div></div>`).join("");
+
+  el.innerHTML = `
+    <div class="head">
+      <span class="nome">${m.nome_squadra}</span>
+      <span class="res">residuo <b>${fmtCredit(m.budget_residuo)}</b> · max ${fmtCredit(m.max_offerta)}</span>
+    </div>
+    <div class="bar">${segmenti}</div>
+    <div class="rep">${celle}</div>
+    ${m.non_tracciato ? `<div class="nontrack">${m.non_tracciato} crediti spesi prima dell'avvio o con costo non ricavabile, non attribuiti a un reparto</div>` : ""}`;
+}
+
+function renderSimili(simili) {
+  if (!simili || !simili.length) return "";
+  const righe = simili.map(s => {
+    const tag = s.stessa_squadra
+      ? `<span style="color:var(--accent2);font-weight:700">stessa squadra</span>`
+      : `<span style="opacity:.75">altra squadra</span>`;
+    const perche = (s.perche && s.perche.length) ? " · " + s.perche.join(" · ") : "";
+    return `<div class="riga">
+      <span class="chi"><b>${s.nome}</b> (${s.squadra})
+        <span class="meta">${tag} · FVM ${s.fvm ?? "-"} · Qt ${s.quotazione ?? "-"} · tit ${s.titolarita_pct ?? "-"}%${perche}</span>
+      </span>
+      <span class="cr">${s.costo}</span>
+    </div>`;
+  }).join("");
+  return `<div class="simili">
+    <div class="lbl">Riferimenti dall'asta scorsa</div>${righe}</div>`;
+}
+
+function renderStorico(st, simili) {
+  if (!st) {
+    return `<div class="storico assente">
+      <div class="lbl">Asta anno scorso</div>
+      <div class="det">Non acquistato da nessuno</div></div>` + renderSimili(simili);
+  }
+  const d = st.dettaglio && st.dettaglio.length ? st.dettaglio[0] : null;
+  const range = st.n > 1 ? ` <span style="font-size:12px;font-weight:400">(min ${st.prezzo_min} – max ${st.prezzo_max}, ${st.n} aste)</span>` : "";
+  let det = "";
+  if (d && st.n === 1) det = `da ${d.squadra_fantacalcio}`;
+  if (st.squadra_diversa && st.squadra_storica) {
+    det += `${det ? " · " : ""}allora giocava nel ${st.squadra_storica}`;
+  }
+  return `<div class="storico">
+    <div class="lbl">Pagato l'anno scorso</div>
+    <div class="val">${st.prezzo_medio} crediti${range}</div>
+    ${det ? `<div class="det">${det}</div>` : ""}
+  </div>`;
+}
+
+function renderTeams(teams, currentMax) {
+  const tbody = document.querySelector("#teams tbody");
+  tbody.innerHTML = "";
+  const suggestedPrice = currentMax || 0;
+  for (const t of (teams || [])) {
+    const tr = document.createElement("tr");
+    const canAfford = (t.max_offerta ?? 0) >= suggestedPrice;
+    tr.className = canAfford ? "affordable" : "not-affordable";
+    if (t.mia) tr.style.background = "rgba(124,92,255,.15)";
+    tr.innerHTML = `<td>${t.nome_squadra}</td>
+      <td class="budget">${fmtCredit(t.budget)}</td>
+      <td class="max">${fmtCredit(t.max_offerta)}</td>
+      <td class="n">${t.n_giocatori ?? 0}/25</td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function renderLog(ev) {
+  const el = document.getElementById("log");
+  if (!ev) { el.innerHTML = '<div class="log-item">nessuna ancora</div>'; return; }
+  const costo = ev.costo != null ? `<b>${ev.costo}</b> crediti`
+    : `<span style="opacity:.7">costo non determinato</span>`;
+  const note = [];
+  if (ev.in_modello === false) note.push("fuori modello");
+  if (ev.fonte === "vetrina") note.push("dedotto dalla vetrina");
+  if (ev.fonte === "sconosciuto") note.push("giocatore non identificato");
+  el.innerHTML = `<div class="log-item"><b>${ev.nome}</b> (${ev.squadra_reale || "?"}) →
+    ${ev.squadra_fantacalcio} per ${costo}
+    ${note.length ? `<span style="opacity:.6"> — ${note.join(", ")}</span>` : ""}</div>`;
+}
+
+// ---------------- ricerca nello storico ----------------
+const SIGLE = {Ata:"Atalanta",Bol:"Bologna",Cag:"Cagliari",Com:"Como",Cre:"Cremonese",
+  Fio:"Fiorentina",Gen:"Genoa",Int:"Inter",Juv:"Juventus",Laz:"Lazio",Lec:"Lecce",
+  Mil:"Milan",Nap:"Napoli",Par:"Parma",Pis:"Pisa",Rom:"Roma",Sas:"Sassuolo",
+  Tor:"Torino",Udi:"Udinese",Ver:"Verona",Emp:"Empoli",Mon:"Monza",Ven:"Venezia",
+  Fro:"Frosinone"};
+const RUOLI = {P:"P", D:"D", C:"C", A:"A"};
+let cercaTimer = null, squadreCaricate = false;
+
+document.getElementById("cercaToggle").addEventListener("click", () => {
+  const c = document.getElementById("cercaCorpo");
+  const aperto = c.style.display !== "none";
+  c.style.display = aperto ? "none" : "block";
+  document.getElementById("cercaChev").textContent = aperto ? "▼" : "▲";
+  if (!aperto) {
+    document.getElementById("cercaNome").focus();
+    if (!squadreCaricate) eseguiRicerca();
+  }
+});
+
+["cercaNome"].forEach(id => document.getElementById(id).addEventListener("input", () => {
+  // piccolo ritardo: in asta si digita in fretta e non serve una richiesta
+  // per ogni lettera
+  clearTimeout(cercaTimer);
+  cercaTimer = setTimeout(eseguiRicerca, 250);
+}));
+["cercaSquadra", "cercaRuolo"].forEach(id =>
+  document.getElementById(id).addEventListener("change", eseguiRicerca));
+
+async function eseguiRicerca() {
+  const token = localStorage.getItem("astaToken");
+  if (!token) return;
+  const q = new URLSearchParams({
+    nome: document.getElementById("cercaNome").value.trim(),
+    squadra: document.getElementById("cercaSquadra").value,
+    ruolo: document.getElementById("cercaRuolo").value,
+  });
+  const esiti = document.getElementById("cercaEsiti");
+  try {
+    const res = await fetch("/storico/cerca?" + q, { headers: { "X-Auth-Token": token } });
+    if (res.status === 401) { localStorage.removeItem("astaToken"); location.href = "/login"; return; }
+    const d = await res.json();
+
+    if (!squadreCaricate && d.squadre) {
+      const sel = document.getElementById("cercaSquadra");
+      d.squadre.forEach(sg => {
+        const o = document.createElement("option");
+        o.value = SIGLE[sg] || sg;
+        o.textContent = SIGLE[sg] || sg;
+        sel.appendChild(o);
+      });
+      squadreCaricate = true;
+    }
+
+    if (!d.risultati.length) {
+      esiti.innerHTML = `<div class="vuoto">Nessun giocatore trovato con questi filtri</div>`;
+      return;
+    }
+    esiti.innerHTML = d.risultati.map(r => `
+      <div class="riga">
+        <span class="chi"><b>${r.nome}</b> ${RUOLI[r.ruolo] ? "· " + r.ruolo : ""}
+          <span class="meta">${SIGLE[r.squadra] || r.squadra} · preso da ${r.squadra_fantacalcio}</span>
+        </span>
+        <span class="cr">${r.costo}</span>
+      </div>`).join("");
+  } catch (e) {
+    esiti.innerHTML = `<div class="vuoto">Ricerca non disponibile</div>`;
+  }
+}
+
+function connect() {
+  const token = localStorage.getItem("astaToken");
+  if (!token) { location.href = "/login"; return; }
+
+  const proto = location.protocol === "https:" ? "wss" : "ws";
+  const ws = new WebSocket(`${proto}://${location.host}/ws/phone?token=${encodeURIComponent(token)}`);
+  const statusEl = document.getElementById("status");
+
+  ws.onopen = () => { statusEl.textContent = "connesso"; statusEl.className = "ok"; };
+  ws.onclose = (ev) => {
+    if (ev.code === 4401) {
+      // token non piu' valido (tipicamente: server riavviato)
+      localStorage.removeItem("astaToken");
+      location.href = "/login";
+      return;
+    }
+    statusEl.textContent = "riconnessione...";
+    statusEl.className = "down";
+    setTimeout(connect, 1500);
+  };
+  ws.onerror = () => ws.close();
+
+  ws.onmessage = (msg) => {
+    const state = JSON.parse(msg.data);
+    renderMiaSquadra(state.mia_squadra);
+    renderPlayer(state.current_player);
+    renderTeams(state.teams, state.current_player ? state.current_player.prezzo_consigliato : 0);
+    renderLog(state.ultima_assegnazione);
+  };
+}
+connect();
+</script>
+</body>
+</html>

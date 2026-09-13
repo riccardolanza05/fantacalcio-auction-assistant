@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Asta Live — Accesso</title>
+<style>
+  :root { --bg:#14101f; --card:#201a33; --accent:#7c5cff; --warn:#ff5c5c;
+          --text:#f1eefc; --muted:#9c93b8; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; background:var(--bg); color:var(--text);
+    font-family:-apple-system,Roboto,"Segoe UI",sans-serif;
+    display:flex; align-items:center; justify-content:center; padding:20px; }
+  .box { background:var(--card); border-radius:16px; padding:28px 24px;
+    width:100%; max-width:340px; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+  h1 { font-size:20px; margin:0 0 4px; }
+  p.sub { font-size:13px; color:var(--muted); margin:0 0 20px; }
+  input { width:100%; padding:13px 14px; font-size:16px; border-radius:10px;
+    border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06);
+    color:var(--text); outline:none; }
+  input:focus { border-color:var(--accent); }
+  button { width:100%; margin-top:12px; padding:13px; font-size:16px;
+    font-weight:600; border:none; border-radius:10px; background:var(--accent);
+    color:#fff; cursor:pointer; }
+  button:disabled { opacity:.5; }
+  .err { color:var(--warn); font-size:13px; margin-top:12px; min-height:18px; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Asta Live</h1>
+  <p class="sub">Inserisci la password per accedere al copilota.</p>
+  <input id="pwd" type="password" placeholder="Password" autocomplete="current-password"
+         inputmode="text" autofocus>
+  <button id="btn">Entra</button>
+  <div class="err" id="err"></div>
+</div>
+
+<script>
+const pwd = document.getElementById("pwd");
+const btn = document.getElementById("btn");
+const err = document.getElementById("err");
+
+async function login() {
+  err.textContent = "";
+  btn.disabled = true;
+  try {
+    const res = await fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: pwd.value }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      // il token resta salvato sul dispositivo: durante l'asta non lo ridigiti
+      localStorage.setItem("astaToken", data.token);
+      location.href = "/";
+    } else {
+      err.textContent = res.status === 401 ? "Password errata." : "Errore " + res.status;
+    }
+  } catch (e) {
+    err.textContent = "Server non raggiungibile.";
+  }
+  btn.disabled = false;
+}
+
+btn.addEventListener("click", login);
+pwd.addEventListener("keydown", e => { if (e.key === "Enter") login(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Dipendenze della pipeline offline (pricing/ e gli script build_*.py in
+# server/). Il modello ML di produzione attesa (assente in questo repo, vedi
+# docs/data-sources.md) richiederebbe in aggiunta scikit-learn e shap.
+pandas>=2.2
+numpy>=1.26
+openpyxl>=3.1

@@ -1,0 +1,81 @@
+Id,Nome,Squadra,Ruolo,fascia,FVM,prezzo,produzione_attesa,p10,p90,prezzo_indifferenza,margine,indice,indice_p10,indice_p90,verdetto
+1060,GiocatoreA01,Inter,A,top,131,1118.5,148.4,113.7,183.1,1356.0,238.0,1.21,0.93,1.5,sottovalutato
+1061,GiocatoreA02,Napoli,A,top,53,450.1,50.3,33.2,67.4,460.0,10.0,1.02,0.67,1.37,valutato correttamente
+1062,GiocatoreA03,Roma,A,top,51,433.0,47.2,30.7,63.7,431.0,-2.0,1.0,0.65,1.34,valutato correttamente
+1063,GiocatoreA04,Atalanta,A,top,49,425.1,53.4,35.8,71.0,488.0,63.0,1.15,0.77,1.53,valutato correttamente
+1064,GiocatoreA05,Torino,A,top,45,386.4,46.2,29.9,62.5,422.0,36.0,1.09,0.71,1.48,valutato correttamente
+1065,GiocatoreA06,Inter,A,top,45,380.3,41.8,26.3,57.3,382.0,2.0,1.0,0.63,1.38,valutato correttamente
+1066,GiocatoreA07,Napoli,A,semitop,40,345.3,43.6,27.8,59.4,398.0,53.0,1.15,0.74,1.57,sottovalutato
+1067,GiocatoreA08,Roma,A,semitop,37,316.6,32.4,18.6,46.2,296.0,-21.0,0.93,0.54,1.33,valutato correttamente
+1068,GiocatoreA09,Atalanta,A,semitop,24,205.7,28.9,15.7,42.1,264.0,58.0,1.28,0.7,1.87,sottovalutato
+1070,GiocatoreA11,Inter,A,semitop,14,125.0,20.0,8.4,31.6,183.0,58.0,1.46,0.61,2.31,sottovalutato
+1069,GiocatoreA10,Torino,A,semitop,15,122.9,10.6,0.7,20.5,97.0,-26.0,0.79,0.05,1.52,sopravvalutato
+1071,GiocatoreA12,Napoli,A,semitop,14,115.9,6.3,0.0,15.4,58.0,-58.0,0.5,0.0,1.21,sopravvalutato
+1073,GiocatoreA14,Atalanta,A,semitop,10,92.8,15.0,4.3,25.7,137.0,44.0,1.48,0.42,2.53,sottovalutato
+1072,GiocatoreA13,Roma,A,semitop,10,82.4,3.5,0.0,12.1,32.0,-50.0,0.39,0.0,1.34,sopravvalutato
+1074,GiocatoreA15,Torino,A,terza,7,54.3,0.0,0.0,6.9,0.0,-54.0,0.0,0.0,1.16,sopravvalutato
+1075,GiocatoreA16,Inter,A,terza,5,46.3,5.4,0.0,14.4,49.0,3.0,1.07,0.0,2.84,valutato correttamente
+1076,GiocatoreA17,Napoli,A,terza,4,36.2,1.6,0.0,9.9,15.0,-21.0,0.4,0.0,2.5,sopravvalutato
+1077,GiocatoreA18,Roma,A,terza,3,26.6,0.0,0.0,5.2,0.0,-27.0,0.0,0.0,1.79,sopravvalutato
+1078,GiocatoreA19,Atalanta,A,terza,3,26.6,0.0,0.0,7.6,0.0,-27.0,0.0,0.0,2.61,sopravvalutato
+1079,GiocatoreA20,Torino,A,terza,1,10.0,0.0,0.0,7.6,0.0,-10.0,0.0,0.0,6.94,sopravvalutato
+1036,GiocatoreC01,Atalanta,C,top,70,530.4,87.6,63.8,111.4,664.0,134.0,1.25,0.91,1.59,sottovalutato
+1037,GiocatoreC02,Torino,C,top,57,427.0,38.8,23.8,53.8,294.0,-133.0,0.69,0.42,0.95,sopravvalutato robusto
+1038,GiocatoreC03,Inter,C,top,51,385.0,40.6,25.3,55.9,308.0,-77.0,0.8,0.5,1.1,sopravvalutato
+1039,GiocatoreC04,Napoli,C,top,49,373.3,60.0,41.2,78.8,455.0,82.0,1.22,0.84,1.6,sottovalutato
+1040,GiocatoreC05,Roma,C,top,46,354.0,64.0,44.5,83.5,485.0,131.0,1.37,0.95,1.79,sottovalutato
+1041,GiocatoreC06,Atalanta,C,top,30,224.5,17.2,6.1,28.3,130.0,-94.0,0.58,0.21,0.96,sopravvalutato robusto
+1042,GiocatoreC07,Torino,C,semitop,24,182.5,22.8,10.7,34.9,173.0,-10.0,0.95,0.44,1.45,valutato correttamente
+1043,GiocatoreC08,Inter,C,semitop,22,170.8,24.4,12.0,36.8,185.0,14.0,1.08,0.53,1.63,valutato correttamente
+1044,GiocatoreC09,Napoli,C,semitop,19,137.9,13.0,2.7,23.3,98.0,-40.0,0.71,0.15,1.28,sopravvalutato
+1045,GiocatoreC10,Roma,C,semitop,16,113.5,11.5,1.4,21.6,87.0,-26.0,0.77,0.09,1.44,sopravvalutato
+1047,GiocatoreC12,Torino,C,semitop,14,112.0,14.8,4.1,25.5,112.0,0.0,1.0,0.28,1.72,valutato correttamente
+1046,GiocatoreC11,Atalanta,C,semitop,15,105.9,10.4,0.5,20.3,79.0,-27.0,0.74,0.04,1.45,sopravvalutato
+1048,GiocatoreC13,Inter,C,semitop,12,96.9,14.4,3.8,25.0,109.0,12.0,1.13,0.3,1.95,valutato correttamente
+1050,GiocatoreC15,Roma,C,semitop,8,63.0,12.0,1.8,22.2,91.0,28.0,1.44,0.22,2.67,sottovalutato
+1051,GiocatoreC16,Atalanta,C,semitop,8,58.4,7.7,0.0,17.1,58.0,-0.0,1.0,0.0,2.22,valutato correttamente
+1049,GiocatoreC14,Napoli,C,semitop,8,49.2,0.0,0.0,7.5,0.0,-49.0,0.0,0.0,1.15,sopravvalutato
+1054,GiocatoreC19,Napoli,C,semitop,5,46.1,13.6,3.2,24.0,103.0,57.0,2.23,0.53,3.94,sottovalutato
+1052,GiocatoreC17,Torino,C,semitop,6,45.2,7.5,0.0,16.8,57.0,12.0,1.26,0.0,2.82,sottovalutato
+1053,GiocatoreC18,Inter,C,terza,5,38.3,4.6,0.0,13.4,35.0,-3.0,0.91,0.0,2.65,valutato correttamente
+1056,GiocatoreC21,Atalanta,C,terza,3,28.7,13.1,2.7,23.5,99.0,70.0,3.46,0.71,6.2,sottovalutato
+1055,GiocatoreC20,Roma,C,terza,3,23.4,3.1,0.0,11.7,23.0,-0.0,1.0,0.0,3.79,valutato correttamente
+1057,GiocatoreC22,Torino,C,terza,2,15.7,0.0,0.0,7.3,0.0,-16.0,0.0,0.0,3.52,sopravvalutato
+1059,GiocatoreC24,Napoli,C,terza,1,9.3,4.0,0.0,12.7,30.0,21.0,3.26,0.0,10.35,sottovalutato
+1058,GiocatoreC23,Inter,C,terza,1,8.7,0.0,0.0,2.6,0.0,-9.0,0.0,0.0,2.26,sopravvalutato
+1012,GiocatoreD01,Napoli,D,top,51,393.5,28.3,15.2,41.4,209.0,-184.0,0.53,0.29,0.78,sopravvalutato robusto
+1013,GiocatoreD02,Roma,D,top,45,345.6,26.6,13.8,39.4,197.0,-149.0,0.57,0.29,0.84,sopravvalutato robusto
+1014,GiocatoreD03,Atalanta,D,top,27,208.9,28.2,15.1,41.3,208.0,-1.0,1.0,0.53,1.46,valutato correttamente
+1015,GiocatoreD04,Torino,D,top,25,196.5,28.5,15.4,41.6,211.0,14.0,1.07,0.58,1.56,valutato correttamente
+1016,GiocatoreD05,Inter,D,top,24,190.8,32.2,18.4,46.0,238.0,47.0,1.25,0.71,1.78,sottovalutato
+1018,GiocatoreD07,Roma,D,top,15,118.1,26.6,13.8,39.4,197.0,79.0,1.66,0.86,2.46,sottovalutato
+1017,GiocatoreD06,Napoli,D,top,15,113.4,13.5,3.1,23.9,100.0,-13.0,0.88,0.2,1.56,valutato correttamente
+1019,GiocatoreD08,Atalanta,D,top,14,108.3,14.7,4.1,25.3,109.0,1.0,1.0,0.28,1.73,valutato correttamente
+1020,GiocatoreD09,Torino,D,top,12,94.9,15.4,4.6,26.2,114.0,19.0,1.2,0.36,2.04,sottovalutato
+1021,GiocatoreD10,Inter,D,top,11,85.1,11.3,1.3,21.3,83.0,-2.0,0.98,0.11,1.85,valutato correttamente
+1022,GiocatoreD11,Napoli,D,top,10,72.2,4.1,0.0,12.8,30.0,-42.0,0.42,0.0,1.31,sopravvalutato
+1023,GiocatoreD12,Roma,D,semitop,9,64.4,3.6,0.0,12.2,27.0,-37.0,0.41,0.0,1.4,sopravvalutato
+1027,GiocatoreD16,Napoli,D,semitop,6,55.7,16.4,5.4,27.4,121.0,65.0,2.18,0.72,3.63,sottovalutato
+1024,GiocatoreD13,Atalanta,D,semitop,7,54.1,7.9,0.0,17.3,58.0,4.0,1.08,0.0,2.36,valutato correttamente
+1025,GiocatoreD14,Torino,D,semitop,6,42.3,2.6,0.0,11.1,19.0,-23.0,0.45,0.0,1.94,sopravvalutato
+1026,GiocatoreD15,Inter,D,semitop,6,38.6,0.0,0.0,2.5,0.0,-39.0,0.0,0.0,0.48,sopravvalutato robusto
+1028,GiocatoreD17,Roma,D,semitop,4,37.1,10.7,0.8,20.6,79.0,42.0,2.13,0.16,4.1,sottovalutato
+1030,GiocatoreD19,Torino,D,semitop,4,36.3,8.9,0.0,18.5,66.0,30.0,1.81,0.0,3.76,sottovalutato
+1031,GiocatoreD20,Inter,D,semitop,4,34.7,7.1,0.0,16.4,52.0,17.0,1.51,0.0,3.49,sottovalutato
+1029,GiocatoreD18,Atalanta,D,semitop,4,33.9,6.4,0.0,15.6,47.0,13.0,1.39,0.0,3.4,sottovalutato
+1033,GiocatoreD22,Roma,D,semitop,3,24.5,1.7,0.0,10.0,13.0,-12.0,0.51,0.0,3.02,sopravvalutato
+1032,GiocatoreD21,Napoli,D,semitop,3,23.9,1.0,0.0,9.2,7.0,-17.0,0.31,0.0,2.84,sopravvalutato
+1034,GiocatoreD23,Atalanta,D,semitop,2,18.1,2.9,0.0,11.4,21.0,3.0,1.18,0.0,4.65,sottovalutato
+1035,GiocatoreD24,Torino,D,terza,1,8.8,0.0,0.0,5.5,0.0,-9.0,0.0,0.0,4.62,sopravvalutato
+1000,GiocatoreP01,Inter,P,top,53,295.8,43.4,27.6,59.2,292.0,-4.0,0.99,0.63,1.35,valutato correttamente
+1001,GiocatoreP02,Napoli,P,top,46,258.7,51.9,34.6,69.2,349.0,90.0,1.35,0.9,1.8,sottovalutato
+1002,GiocatoreP03,Roma,P,top,31,174.0,37.9,23.1,52.7,255.0,81.0,1.46,0.89,2.04,sottovalutato
+1003,GiocatoreP04,Atalanta,P,top,20,112.6,28.3,15.2,41.4,190.0,77.0,1.69,0.91,2.47,sottovalutato
+1004,GiocatoreP05,Torino,P,top,19,107.0,22.1,10.1,34.1,149.0,42.0,1.39,0.63,2.14,sottovalutato
+1005,GiocatoreP06,Inter,P,top,14,79.6,12.0,1.8,22.2,81.0,1.0,1.01,0.15,1.88,valutato correttamente
+1006,GiocatoreP07,Napoli,P,top,14,78.6,8.1,0.0,17.6,54.0,-25.0,0.69,0.0,1.51,sopravvalutato
+1007,GiocatoreP08,Roma,P,top,8,44.6,0.1,0.0,8.1,1.0,-44.0,0.02,0.0,1.22,sopravvalutato
+1008,GiocatoreP09,Atalanta,P,semitop,3,19.1,5.2,0.0,14.1,35.0,16.0,1.83,0.0,4.96,sottovalutato
+1009,GiocatoreP10,Torino,P,semitop,3,16.4,0.0,0.0,7.2,0.0,-16.0,0.0,0.0,2.95,sopravvalutato
+1010,GiocatoreP11,Inter,P,semitop,1,6.7,0.0,0.0,5.4,0.0,-7.0,0.0,0.0,5.42,sopravvalutato
+1011,GiocatoreP12,Napoli,P,semitop,1,6.7,0.0,0.0,6.9,0.0,-7.0,0.0,0.0,6.92,sopravvalutato

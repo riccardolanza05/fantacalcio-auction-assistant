@@ -1,0 +1,35 @@
+# Riferimento dei percorsi e dei parametri usati nella pipeline e nel
+# server. Non e' letto automaticamente da nessuno script (per restare
+# minimali, gli script prendono questi valori da riga di comando o da
+# variabili d'ambiente); questo file serve da promemoria di come incastrare
+# i pezzi. Vedi docs/data-sources.md per dove procurarsi ciascun file.
+
+[lega]
+nome = "Lega Abendosa"          # solo etichetta, non usato dal codice
+squadre = 10                     # NSQ in server/build_giocatori.py e server/vorp_live.py
+budget_per_squadra = 1000
+mia_squadra = "NapoLanza"        # -> variabile d'ambiente MIA_SQUADRA
+
+[pricing]
+# python pricing/modello_prezzo.py --in-csv <predizioni> --out-csv <prezzi> [--hreg <Hreg.pkl>]
+predizioni_csv = "predizioni_2026_27_v2.csv"   # uscita del modello ML (non nel repo, vedi docs/data-sources.md)
+prezzi_csv = "prezzi_2026_27.csv"
+hreg_pkl = "Hreg.pkl"                           # opzionale: shrinkage gerarchico per lo strato 3b
+
+# python pricing/verdetto.py --in-csv <prezzi> --out-csv <verdetto>
+verdetto_csv = "verdetto_2026_27.csv"
+
+[server]
+# python server/build_giocatori.py --prezzi-csv ... --verdetto-csv ... --predizioni ... --statistiche ... --probabili ... --out ...
+statistiche_xlsx = "Statistiche_Fantacalcio_Stagione_2025_26.xlsx"   # file ufficiale fantacalcio.it
+probabili_html = "probabili-formazioni-serie-a"                      # pagina salvata come HTML
+giocatori_xlsx = "giocatori_2026_27.xlsx"                            # database d'uscita, usato da app.py
+
+# python server/build_storico_arricchito.py --rose <Rose_lega-tuasigla.xlsx> --quotazioni ... --statistiche ... --out ...
+rose_lega_xlsx = "Rose_lega-<tuasigla>.xlsx"    # export privato della tua lega, non nel repo
+quotazioni_xlsx = "Quotazioni_Fantacalcio_Stagione_2025_26.xlsx"
+storico_asta_xlsx = "storico_asta_2025_26.xlsx"
+
+[avvio]
+# ASTA_PASSWORD e' obbligatoria: il server non parte senza (server/auth.py)
+asta_password = "IMPOSTALA_TU"
